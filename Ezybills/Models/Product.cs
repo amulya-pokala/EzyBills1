@@ -57,7 +57,7 @@ namespace EzyBills.Models
 
         [Display(Name = "Quantity")]
 
-        private int ProductQuantity { get; set; }
+        public int ProductQuantity { get; set; }
 
 
 
