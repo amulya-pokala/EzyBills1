@@ -1,0 +1,44 @@
+﻿<html>
+
+<title>
+    Vendor Dashboard
+</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+
+<body>
+
+    <script>
+        document.onload = function () {
+            var url = "http://localhost:59847/Vendors/Login";
+            console.log("hey");
+            $.get(url, function (data1) {
+               
+                $.ajax({
+                    url: "http://localhost:59847/Vendors/GetId",
+                    type: "get", 
+                    data: {
+                        email: data1.email,
+                    },
+                    success: function (response) {
+                        console.log(response.vendorId);
+                    },
+                    error: function (xhr) {
+                        //Do Something to handle error
+                    }
+                });
+            });
+
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+
+    <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+</body>
+

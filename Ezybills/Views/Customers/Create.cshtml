@@ -1,0 +1,130 @@
+﻿<html>
+
+<head>
+    <title>
+        Vendor Registration
+    </title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+
+
+
+    <style type="text/css">
+        html,
+        body {
+            height: 100%;
+            margin: 30px;
+        }
+
+        html {
+            display: table;
+            margin: auto;
+        }
+
+        body {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .margin {
+            margin: 0 !important;
+        }
+    </style>
+
+</head>
+
+<body class="white">
+    <div id="login-page" class="row">
+        <div class="col s12 z-depth-6 card-panel">
+            <form class="login-form">
+                <div class="row margin">
+                    <div class="input-field col s12">
+                        <i class="mdi-social-person-outline prefix"></i>
+                        <input id="username" type="text" class="validate">
+                        <label for="username" class="center-align">Username</label>
+                    </div>
+                </div>
+                <div class="row margin">
+                    <div class="input-field col s12">
+                        <i class="mdi-communication-email prefix"></i>
+                        <input id="email" type="email" class="validate">
+                        <label for="email" class="center-align">Email</label>
+                    </div>
+                </div>
+                <div class="row margin">
+                    <div class="input-field col s12">
+                        <i class="mdi-communication-email prefix"></i>
+                        <input id="phone" type="text" class="validate">
+                        <label for="phone" class="center-align">Phone No</label>
+                    </div>
+                </div>
+                
+                <div class="row margin">
+                    <div class="input-field col s12">
+                        <i class="mdi-action-lock-outline prefix"></i>
+                        <input id="password" type="password" class="validate">
+                        <label for="password">Password</label>
+                    </div>
+                </div>
+                <div class="row margin">
+                    <div class="input-field col s12">
+                        <i class="mdi-action-lock-outline prefix"></i>
+                        <input id="password-again" type="password">
+                        <label for="password-again">Re-type password</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <a onclick="registerCustomer()" class="btn waves-effect waves-light col s12">Register Now</a>
+                    </div>
+                    <div class="input-field col s12">
+                        <p class="margin center medium-small sign-up">
+                            Already have an account?
+                            <a href="Login">Login</a>
+                        </p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        function registerCustomer() {
+            var username = document.getElementById("username").value;
+            console.log(username);
+            var email = document.getElementById("email").value;
+            var phoneNo = document.getElementById("phone").value;
+            var password = document.getElementById("password").value;
+            var repass = document.getElementById("password-again").value;
+            $.ajax({
+
+                url: 'http://localhost:59847/Customers/Create',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    "CustomerUsername": username,
+                    "CustomerPassword": password,
+                    "SetCustomerPassword": repass,
+                    "CustomerEmail": email,
+                    "CustomerPhone": phoneNo,
+                }),
+                dataType: "json",
+                success: function (result) {
+                    console.log("created successfully")
+                }
+
+            });
+
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+
+    <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+</body>
+
+</html>

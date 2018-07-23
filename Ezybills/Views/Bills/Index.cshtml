@@ -1,0 +1,42 @@
+﻿@model IEnumerable<EzyBills.Models.Bill>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Total_Bill)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.dateOfPurchase)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Total_Bill)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.dateOfPurchase)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BillVendorID)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.BillID }) |
+            @Html.ActionLink("Details", "Details", new { id = item.BillID }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.BillID })
+        </td>
+    </tr>
+}
+
+</table>
