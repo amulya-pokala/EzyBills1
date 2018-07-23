@@ -1,0 +1,66 @@
+﻿
+@{
+    ViewBag.Title = "Testing_Login";
+}
+@section VendorLogin{
+    <link href="@Url.Content("~/Content/Login.css")" rel="stylesheet" type="text/css" />
+}
+<html>
+<head>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body id="LoginForm">
+    <div class="container">
+        <div class="login-form">
+            <div class="main-div">
+                <div class="panel">
+                    <h2>Vendor Login</h2>
+                    <p>Please enter your email and password</p>
+                </div>
+                <form id="Login">
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="VendorEmail" placeholder="Email Address">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" id="VendorPassword" placeholder="Password">
+                    </div>
+                    <div class="forgot">
+                        <a href="/">Forgot password?</a>
+                    </div>
+                    <button onclick="loginVendor()" class="btn btn-primary">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        function loginVendor() {
+            console.log("Success");
+            $('#profile').hide();
+            var email = document.getElementById("VendorEmail").value;
+            var repass = document.getElementById("VendorPassword").value;
+            $.ajax({
+                url: 'http://localhost:59847/Vendors/Login',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    "SetVendorPassword": repass,
+                    "VendorEmail": email,
+                }),
+                dataType: "json",
+                success: function (returndata) {
+                    if (returndata.ok) {
+                        console.log("done");
+                        console.log(returndata.email);
+                        emailMain = returndata.email;
+                        window.location.href = "http://localhost:59847/Vendors/Login";
+                    }
+                    else
+                        window.alert(returndata.message);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

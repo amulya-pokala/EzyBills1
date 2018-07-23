@@ -141,7 +141,7 @@ namespace Ezybills.Controllers
 
         public ActionResult Login([System.Web.Http.FromBody] Vendor vendor)
         {
-
+            Session["VendorEmail"] = vendor.VendorEmail;
             if (db.Vendors.FirstOrDefault(x => (x.VendorEmail == vendor.VendorEmail && x.SetVendorPassword == vendor.SetVendorPassword)) != null)
             {
                 return Json(new { ok = true,email=vendor.VendorEmail });

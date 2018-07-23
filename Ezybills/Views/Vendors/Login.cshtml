@@ -42,7 +42,7 @@
 </head>
 
 <body class="white">
-    <div id="login-page" class="row">
+    @*<div id="login-page" class="row">
         <div class="col s12 z-depth-6 card-panel">
             <form class="login-form">
 
@@ -71,7 +71,7 @@
                 </div>
             </form>
         </div>
-    </div>
+    </div>*@
     <div id="profile">
         <div class="row">
             <div class="input-field col s12">
@@ -187,37 +187,37 @@
 
         });
         
-        function loginVendor() {
-            $('#profile').hide();
-            var email = document.getElementById("email").value;
+        //function loginVendor() {
+        //    $('#profile').hide();
+        //    var email = document.getElementById("email").value;
 
-            var repass = document.getElementById("password").value;
-            $.ajax({
+        //    var repass = document.getElementById("password").value;
+        //    $.ajax({
 
-                url: 'http://localhost:59847/Vendors/Login',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({
+        //        url: 'http://localhost:59847/Vendors/Login',
+        //        type: 'POST',
+        //        contentType: 'application/json',
+        //        data: JSON.stringify({
 
-                    "SetVendorPassword": repass,
-                    "VendorEmail": email,
+        //            "SetVendorPassword": repass,
+        //            "VendorEmail": email,
 
-                }),
-                dataType: "json",
-                success: function (returndata) {
-                    if (returndata.ok) {
-                        console.log("done");
-                        console.log(returndata.email);
-                        emailMain = returndata.email;
-                        getProfile(returndata.email);
-                    }
-                    else
-                        window.alert(returndata.message);
-                }
+        //        }),
+        //        dataType: "json",
+        //        success: function (returndata) {
+        //            if (returndata.ok) {
+        //                console.log("done");
+        //                console.log(returndata.email);
+        //                emailMain = returndata.email;
+        //                getProfile(returndata.email);
+        //            }
+        //            else
+        //                window.alert(returndata.message);
+        //        }
 
-            });
+        //    });
 
-        }
+        //}
         function getProfile(email) {
             $("#login-page").hide();
             $("#profile").show();
