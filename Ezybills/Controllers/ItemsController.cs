@@ -60,7 +60,7 @@ namespace Ezybills.Controllers
         {
 
             var items = db.Items.ToArray();
-            var ids = items.Where(x => x.BillId == (int)item.ItemId);
+            var ids = items.Where(x => x.ItemBillID == (int)item.ItemId);
             return Json(new { ok = true, id = ids });
         }
 

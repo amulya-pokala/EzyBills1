@@ -51,8 +51,8 @@ namespace Ezybills.Controllers
 
             db.Bills.Add(bill);
             db.SaveChanges();
-           
-            return Json(new { ok = true, BillID = bill.BillID});
+
+            return Json(new { ok = true, BillID = bill.BillID });
 
         }
 
@@ -120,8 +120,17 @@ namespace Ezybills.Controllers
             var bills = db.Bills.ToArray();
             var ids = bills.Where(x => x.BillVendorID == (int)bill.BillID);
             return Json(new { ok = true, id = ids });
-            
+
         }
+        [HttpPost]
+        public ActionResult GetByCustomerId([System.Web.Http.FromBody] Bill bill)
+        {
+            var bills = db.Bills.ToArray();
+            var ids = bills.Where(x => x.BillCustomerID == (int)bill.BillID);
+            return Json(new { ok = true, id = ids });
+
+        }
+
 
         protected override void Dispose(bool disposing)
         {

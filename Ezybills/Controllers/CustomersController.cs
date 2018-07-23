@@ -56,15 +56,23 @@ namespace Ezybills.Controllers
             return View("Index");
 
         }
+
+        [HttpPost]
+        public ActionResult GetId([System.Web.Http.FromBody]Customer customer)
+        {
+            var cu = db.Customers.FirstOrDefault(x => x.CustomerEmail == customer.CustomerEmail);
+            return Json(new { customerId = cu.CustomerID });
+        }
+
         // POST: Customers/Login
         [HttpPost]
 
         public ActionResult Login([System.Web.Http.FromBody] Customer customer)
         {
 
-            if(db.Customers.FirstOrDefault(x => (x.CustomerEmail == customer.CustomerEmail && x.SetCustomerPassword == customer.SetCustomerPassword)) != null)
+            if (db.Customers.FirstOrDefault(x => (x.CustomerEmail == customer.CustomerEmail && x.SetCustomerPassword == customer.SetCustomerPassword)) != null)
             {
-                return Json(new { ok = true, newurl = Url.Action("Profile") });
+                return Json(new { ok = true, newurl = Url.Action("Profile"), email = customer.CustomerEmail });
 
             }
 

@@ -11,12 +11,20 @@ namespace EzyBills.Models
     public class Bill
     {
         [Required]
-       
+
+        [Display(Name = "Vendor")]
+
         public int BillVendorID { get; set; }
+
+        public virtual Vendor Vendor { get; set; }
 
         [Required]
 
+        [Display(Name = "Customer")]
+
         public int BillCustomerID { get; set; }
+
+        public virtual Customer Customer { get; set; }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -25,7 +33,7 @@ namespace EzyBills.Models
         [Display(Name ="Total")]
         public double Total_Bill { get; set; }
 
-
+        [Required]
         [Display(Name ="Date")]
         public DateTime dateOfPurchase { get; set; }
     }

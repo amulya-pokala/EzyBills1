@@ -10,7 +10,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+
+    <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
 
 
     <style type="text/css">
@@ -63,12 +67,21 @@
                     <div class="input-field col s12">
                         <a onclick="loginCustomer()" class="btn waves-effect waves-light col s12">Login</a>
                     </div>
-                    
+
                 </div>
             </form>
         </div>
+        <div id="models">
+
+        </div>
     </div>
     <script>
+        var customerId = 0;
+        $(document).ready(function () {
+
+            $("#models").hide();
+
+        });
         function loginCustomer() {
 
             var email = document.getElementById("email").value;
@@ -87,18 +100,109 @@
                 }),
                 dataType: "json",
                 success: function (result) {
-                    console.log("created successfully")
+                    $("#login-page").hide();
+                    $("#models").show();
+                    if (result.ok) {
+                        console.log("done");
+                        console.log(result.email);
+                        emailMain = result.email;
+                        getProfile(result.email);
+                    }
+                    else
+                        window.alert(result.message);
+
                 }
 
             });
 
         }
+        function getProfile(email) {
+            $.ajax({
+                url: "http://localhost:59847/Customers/GetId",
+                type: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify({
+
+
+                    "CustomerEmail": email,
+
+                }),
+                dataType: "json",
+                success: function (response) {
+                    console.log(response.customerId);
+                    customerId = response.customerId;
+                    summary();
+                },
+                error: function () {
+                    console.log("failed");
+                }
+            });
+
+        }
+        function summary() {
+            var inner = "";
+            $.ajax({
+
+                url: 'http://localhost:59847/Bills/GetByCustomerId/',
+                type: 'POST',
+                contentType: 'application/json',
+                async: false,
+                data: JSON.stringify({
+                    "BillID": customerId,
+                }),
+                success: function (data) {
+                    if (data.ok) {
+                        console.log("retrieved all the bill ids");
+                        console.log(data.id);
+                        console.log(data.id.length);
+                        if (data.id.length > 0) {
+                            for (var i = 0; i < data.id.length; i++)
+                                inner = "";
+                            console.log((data.id[i]));
+                            console.log("bill id :" + (data.id)[i].BillID);
+                            inner += "<div class=\"row\">"
+                                + "<div class=\"col s12 m6\" >"
+                                + " <div class=\"card blue-grey darken-1\">"
+                                + "<div class=\"card-content white-text\">"
+                                + "<span class=\"card-title\">Test Bill</span>"
+                                + "<p><table><tr><th>Item Name</th><th>Quantity Purchased</th><th>Item Price</th></tr>";
+                            $.ajax({
+                                url: 'http://localhost:59847/Items/GetByBillId/',
+                                type: 'POST',
+                                contentType: 'application/json',
+                                async: false,
+                                data: JSON.stringify({
+                                    "ItemId": (data.id)[i].BillID,
+
+                                }),
+                                success: function (itemdata) {
+                                    console.log("itemdata: " + itemdata.id);
+                                    for (var j = 0; j < itemdata.id.length; j++) {
+                                        console.log((itemdata.id)[j].ItemName);
+                                        inner += "<tr><td>"
+                                            + (itemdata.id)[j].ItemName + "</td>"
+                                            + "<td>"
+                                            + (itemdata.id)[j].QuantityPurchased + "</td>"
+                                            + "<td>" + (itemdata.id)[j].QuantityCost + "</td></tr>"
+                                        console.log("inner: " + inner);
+                                    }
+                                    inner += "</table></p></div>"
+                                        + "</div>"
+                                        + " </div >"
+                                        + "</div>";
+                                }
+
+                            });
+                            document.getElementById("models").innerHTML += inner;
+
+
+                        }
+                    }
+                }
+            });
+        }
     </script>
-    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-
-    <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
 </body>
 
 </html>

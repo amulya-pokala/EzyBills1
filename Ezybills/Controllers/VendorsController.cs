@@ -144,7 +144,7 @@ namespace Ezybills.Controllers
 
             if (db.Vendors.FirstOrDefault(x => (x.VendorEmail == vendor.VendorEmail && x.SetVendorPassword == vendor.SetVendorPassword)) != null)
             {
-                return Json(new { ok = true, newurl = Url.Action("Profile"),email=vendor.VendorEmail });
+                return Json(new { ok = true,email=vendor.VendorEmail });
 
 
             }
