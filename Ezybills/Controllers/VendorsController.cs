@@ -21,6 +21,19 @@ namespace Ezybills.Controllers
         {
             return View(db.Vendors.ToList());
         }
+        [HttpPost]
+        public ActionResult StoreNames()
+        {
+            var store = db.Vendors.Select(x => x.StoreName);
+            return Json(new { stores = store });
+        }
+
+        [HttpPost]
+        public ActionResult Location([System.Web.Http.FromBody] Vendor vendor)
+        {
+            var location = db.Vendors.Where(x => x.StoreName == vendor.StoreName).Select(x => x.Location);
+            return Json(new { locations = location });
+        }
 
         // GET: Vendors/Details/5
         public ActionResult Details(int? id)
@@ -47,7 +60,7 @@ namespace Ezybills.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-      
+
         public ActionResult Create([System.Web.Http.FromBody] Vendor vendor)
         {
             try
@@ -136,6 +149,11 @@ namespace Ezybills.Controllers
         {
             return View();
         }
+
+        public ActionResult Testing_Login()
+        {
+            return View("Testing_Login");
+        }
         // POST: Vendors/Login
         [HttpPost]
 
@@ -144,7 +162,7 @@ namespace Ezybills.Controllers
             Session["VendorEmail"] = vendor.VendorEmail;
             if (db.Vendors.FirstOrDefault(x => (x.VendorEmail == vendor.VendorEmail && x.SetVendorPassword == vendor.SetVendorPassword)) != null)
             {
-                return Json(new { ok = true,email=vendor.VendorEmail });
+                return Json(new { ok = true, email = vendor.VendorEmail });
 
 
             }
@@ -152,16 +170,14 @@ namespace Ezybills.Controllers
             return Json(new { ok = false, message = "login failed" });
 
         }
+
         [HttpPost]
         public ActionResult GetId([System.Web.Http.FromBody]Vendor vendor)
         {
-            var ve=db.Vendors.FirstOrDefault(x => x.VendorEmail == vendor.VendorEmail);
-            return Json(new { vendorId= ve.VendorID });
+            var ve = db.Vendors.FirstOrDefault(x => x.VendorEmail == Session["VendorEmail"].ToString());
+            return Json(new { vendorId = ve.VendorID });
         }
-        public ActionResult Profile(Vendor vendor)
-        {
-            return View(vendor);
-        }
+
 
         protected override void Dispose(bool disposing)
         {

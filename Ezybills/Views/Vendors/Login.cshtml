@@ -10,11 +10,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
-    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-    <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
 
 
     <style type="text/css">
@@ -40,7 +40,6 @@
     </style>
 
 </head>
-
 <body class="white">
     @*<div id="login-page" class="row">
         <div class="col s12 z-depth-6 card-panel">
@@ -123,6 +122,13 @@
         </div>
     </div>
     <div id="bills">
+        <div class="input-field col s6">
+            <input id="customerPhone" type="text" class="validate">
+            <label for="Phone">Customer Phone Number</label>
+        </div>
+        <div class="input-field col s12">
+            <a onclick="checkIfCustomeExists()" class="btn waves-effect waves-light col s12">Check</a>
+        </div>
         <div class="input-field col s12">
             <a onclick="computeBill()" class="btn waves-effect waves-light col s12">Compute Bill</a>
         </div>
@@ -151,7 +157,7 @@
 
                     <td>
                         <div class="input-field col s6">
-                            <input id="item_quantity_bill" type="number" class="validate">
+                            <input id="item_quantity_bill" onchange="changePrice(this)" type="number" class="validate">
                             <label for="item_quantity_bill">Item Quantity</label>
                         </div>
                     </td>
@@ -166,27 +172,35 @@
             <tbody id="table-body"></tbody>
         </table>
     </div>
-    <div id="models">
+    <div id="finish">
         <div class="input-field col s12">
             <a onclick="finish()" class="btn waves-effect waves-light col s12">Dashboard</a>
         </div>
     </div>
+    <div id="models">
+
+    </div>
+
 
     <script>
         var emailMain = "";
         var vendorId;
         var itemList = [];
         var index = 0;
+        var customerId = 0;
+        var products = [];
+        var prices = [];
+        var itemSelected = "";
+        var sum = new Number(0);
         $(document).ready(function () {
-
             $('#items').hide();
-            $('#profile').hide();
+            $('#profile').show();
             $("#bills").hide();
             $("#models").hide();
-
-
+            $("#finish").hide();
+            getProfile();
         });
-        
+
         //function loginVendor() {
         //    $('#profile').hide();
         //    var email = document.getElementById("email").value;
@@ -218,10 +232,10 @@
         //    });
 
         //}
-        function getProfile(email) {
+        function getProfile() {
             $("#login-page").hide();
             $("#profile").show();
-
+           
             console.log("hey:" + emailMain);
             $.ajax({
                 url: "http://localhost:59847/Vendors/GetId",
@@ -249,6 +263,33 @@
             $("#items").show();
             $("#bills").hide();
             $("#models").hide();
+            $("#finish").hide();
+
+        }
+        function checkIfCustomeExists() {
+            var phoneNo = document.getElementById("customerPhone").value;
+            console.log("phoneNo:" + phoneNo);
+            $.ajax({
+
+                url: 'http://localhost:59847/Customers/checkPhone',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    "CustomerPhone": phoneNo,
+
+                }),
+                dataType: "json",
+                success: function (returndata) {
+                    if (returndata.ok) {
+                        customerId = returndata.customerId;
+                        console.log(customerId);
+                    }
+                    else {
+                        window.alert("no registered account with this mobile number");
+                    }
+                }
+            });
+
 
         }
         function addItem() {
@@ -257,6 +298,7 @@
             var itemQuantity = document.getElementById("item_quantity").value;
             var itemPrice = document.getElementById("item_price").value;
             var itemDescription = document.getElementById("item_name").value;
+
             console.log("vendorid: " + vendorId);
             $.ajax({
 
@@ -294,6 +336,7 @@
             $("#items").hide();
             $("#bills").hide();
             $("#models").hide();
+            $("#finish").hide();
             document.getElementById("models").innerHTML = "";
         }
 
@@ -301,6 +344,45 @@
             $("#bills").show();
             $("#profile").hide();
             $("#models").hide();
+            $.ajax({
+
+                url: 'http://localhost:59847/Products/getProductsByVendorId',
+                type: 'POST',
+                contentType: 'application/json',
+                async: false,
+                data: JSON.stringify({
+                    "ItemVendorId": vendorId,
+
+                }),
+                dataType: "json",
+                success: function (returndata) {
+                    for (var i = 0; i < returndata.id.length; i++) {
+                        products[i] = (returndata.id)[i].ProductName;
+                        prices[i] = (returndata.id)[i].ProductPrice;
+                    }
+                    console.log("autocomplete");
+                    $("#item_name_bill").autocomplete({
+                        source: products,
+                        select: function (event, ui) {
+                            console.log("select in autocomplete");
+                            console.log(ui.item);
+                            itemSelected = ui.item.label;
+                        }
+
+                    });
+                }
+            });
+
+
+        }
+        function changePrice() {
+            var index = products.indexOf(itemSelected);
+            var price = prices[index];
+            console.log("price: " + price);
+            document.getElementById("item_price_bill").value = price * document.getElementById("item_quantity_bill").value;
+            console.log(document.getElementById("item_price_bill").value);
+            sum += new Number(document.getElementById("item_price_bill").value);
+            console.log(sum);
         }
         function addToTable() {
             var itemName = document.getElementById("item_name_bill").value;
@@ -327,8 +409,8 @@
                 contentType: 'application/json',
                 data: JSON.stringify({
                     "BillVendorID": vendorId,
-                    "BillCustomerID": 1,
-                    "Total_Bill": 1000,
+                    "BillCustomerID": customerId,
+                    "Total_Bill": sum,
                     "dateOfPurchase": new Date()
                 }),
                 dataType: "json",
@@ -343,19 +425,24 @@
                                 type: 'POST',
                                 contentType: 'application/json',
                                 data: JSON.stringify({
-                                    "BillId": returndata.BillID,
+                                    "ItemBillID": returndata.BillID,
                                     "ItemName": itemList[i].ItemName,
                                     "QuantityPurchased": itemList[i].QuantityPurchased,
                                     "QuantityCost": itemList[i].QuantityCost,
                                 }),
                                 success: function () {
                                     console.log("item added to bill");
+                                    products = [];
+                                    proces = [];
+                                    index = 0;
+                                    itemList = [];
+                                    sum = 0;
                                     finish();
+
                                 }
                             })
                         }
-                        index = 0;
-                        itemList = [];
+
                     }
 
 
@@ -365,9 +452,11 @@
             });
         }
         function summary() {
+            document.getElementById("models").innerHTML = "";
             $("#profile").hide();
             $("#models").show();
             $("#items").hide();
+            $("#finish").show();
             $("#bills").hide();
             var inner = "";
             $.ajax({
@@ -375,7 +464,7 @@
                 url: 'http://localhost:59847/Bills/GetByVendorId/',
                 type: 'POST',
                 contentType: 'application/json',
-                async:false,
+                async: false,
                 data: JSON.stringify({
                     "BillID": vendorId,
 
@@ -386,44 +475,46 @@
                         console.log(data.id);
                         console.log(data.id.length);
                         for (var i = 0; i < data.id.length; i++) {
-                            
+
                             inner = "";
                             console.log((data.id[i]));
                             console.log("bill id :" + (data.id)[i].BillID);
-                            inner += "<div class=\"row\">"
-                                + "<div class=\"col s12 m6\" >"
-                                + " <div class=\"card blue-grey darken-1\">"
-                                + "<div class=\"card-content white-text\">"
-                                + "<span class=\"card-title\">Test Bill</span>"
-                                + "<p><table><tr><th>Item Name</th><th>Quantity Purchased</th><th>Item Price</th></tr>";
-                            $.ajax({
-                                url: 'http://localhost:59847/Items/GetByBillId/',
-                                type: 'POST',
-                                contentType: 'application/json',
-                                async: false,
-                                data: JSON.stringify({
-                                    "ItemId": (data.id)[i].BillID,
+                            if ((data.id)[i].BillID > 0) {
+                                inner += "<div class=\"row\">"
+                                    + "<div class=\"col s12 m6\" >"
+                                    + " <div class=\"card blue-grey darken-1\">"
+                                    + "<div class=\"card-content white-text\">"
+                                    + "<span class=\"card-title\">Test Bill</span>"
+                                    + "<p><table><tr><th>Item Name</th><th>Quantity Purchased</th><th>Item Price</th></tr>";
+                                $.ajax({
+                                    url: 'http://localhost:59847/Items/GetByBillId/',
+                                    type: 'POST',
+                                    contentType: 'application/json',
+                                    async: false,
+                                    data: JSON.stringify({
+                                        "ItemId": (data.id)[i].BillID,
 
-                                }),
-                                success: function (itemdata) {
-                                    console.log("itemdata: " + itemdata.id);
-                                    for (var j = 0; j < itemdata.id.length; j++) {
-                                        console.log((itemdata.id)[j].ItemName);
-                                        inner += "<tr><td>"
-                                            + (itemdata.id)[j].ItemName + "</td>"
-                                            + "<td>"
-                                            + (itemdata.id)[j].QuantityPurchased + "</td>"
-                                            + "<td>" + (itemdata.id)[j].QuantityCost + "</td></tr>"
-                                        console.log("inner: " + inner);
+                                    }),
+                                    success: function (itemdata) {
+                                        console.log("itemdata: " + itemdata.id);
+                                        for (var j = 0; j < itemdata.id.length; j++) {
+                                            console.log((itemdata.id)[j].ItemName);
+                                            inner += "<tr><td>"
+                                                + (itemdata.id)[j].ItemName + "</td>"
+                                                + "<td>"
+                                                + (itemdata.id)[j].QuantityPurchased + "</td>"
+                                                + "<td>" + (itemdata.id)[j].QuantityCost + "</td></tr>"
+                                            console.log("inner: " + inner);
+                                        }
+                                        inner += "</table><br>Total Bill:" + (data.id)[i].Total_Bill + "</p></div>"
+                                            + "</div>"
+                                            + " </div >"
+                                            + "</div>";
                                     }
-                                    inner += "</table></p></div>"
-                                        + "</div>"
-                                        + " </div >"
-                                        + "</div>";
-                                }
 
-                            });
-                            document.getElementById("models").innerHTML += inner;
+                                });
+                                document.getElementById("models").innerHTML += inner;
+                            }
                         }
 
                     }
@@ -432,7 +523,5 @@
             });
         }
     </script>
-
 </body>
-
 </html>

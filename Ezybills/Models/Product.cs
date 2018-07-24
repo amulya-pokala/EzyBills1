@@ -13,8 +13,7 @@ namespace EzyBills.Models
 
         [Display(Name = "Vendor")]
 
-        public int ItemVendorId;
-
+        public int ItemVendorId { get; set; }
         public virtual Vendor Vendor { get; set; }
 
 

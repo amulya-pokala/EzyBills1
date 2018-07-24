@@ -48,9 +48,16 @@ namespace Ezybills.Controllers
             db.SaveChanges();
             return Json(new { ok = true });
 
-
-
         }
+
+        [HttpPost]
+        public ActionResult getProductsByVendorId([System.Web.Http.FromBody] Product product)
+        {
+            var products = db.Products.ToArray();
+            var ids = products.Where(x => x.ItemVendorId == product.ItemVendorId);
+            return Json(new { ok = true, id = ids });
+        }
+
         //GET: Products/GetByVendorIds/id
         public ActionResult GetByVendorIds(int? id)
         {

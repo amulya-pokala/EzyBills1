@@ -52,5 +52,6 @@ namespace EzyBills.Models
         [Display(Name="PhoneNo")]
         public string CustomerPhone { get; set; }
 
+
     }
 }

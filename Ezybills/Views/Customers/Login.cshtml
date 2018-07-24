@@ -10,12 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
-    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-
-    <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
-
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <style type="text/css">
         html,
@@ -42,6 +38,14 @@
 </head>
 
 <body class="white">
+    <div id="dashboard">
+        <div class="row">
+            <div class="input-field col s12">
+                <a onclick="dashboard()" class="btn waves-effect waves-light col s12">Dashboard</a>
+            </div>
+
+        </div>
+    </div>
     <div id="login-page" class="row">
         <div class="col s12 z-depth-6 card-panel">
             <form class="login-form">
@@ -71,17 +75,71 @@
                 </div>
             </form>
         </div>
-        <div id="models">
 
+    </div>
+    <div id="models">
+
+
+    </div>
+    <div id="profile">
+        <div class="input-field col s12">
+            <a onclick="summary()" class="btn waves-effect waves-light col s12">Summary</a>
+        </div>
+        <div class="input-field col s12">
+            <a onclick="availability()" class="btn waves-effect waves-light col s12">Check Availability</a>
+        </div>
+    </div>
+    <div id="available">
+        <div class="input-field col s6">
+            <input type="text" id="store_name" class="autocomplete">
+            <label for="store_name">Store Name</label>
+        </div>
+        <div class="input-field col s6">
+            <input type="text" id="loc" class="autocomplete">
+            <label for="loc">Location</label>
+        </div>
+        <div class="input-field col s6">
+            <input type="text" id="product" class="autocomplete">
+            <label for="product">Product</label>
+        </div>
+        <div class="input-field col s12">
+            <a onclick="checkIfAvailable()" class="btn waves-effect waves-light col s12">check</a>
+        </div>
+    </div>
+    <div id="productDetails">
+        <div class="input-field col s6">
+            <input type="text" id="productName">
+            <label for="product">Product</label>
+        </div>
+        <div class="input-field col s6">
+            <input type="text" id="productQuantity">
+            <label for="product">Quantity Available</label>
+        </div>
+        <div class="input-field col s6">
+            <input type="text" id="productPrice">
+            <label for="product">Price</label>
         </div>
     </div>
     <script>
         var customerId = 0;
+        var loc = "";
+        var storename = "";
         $(document).ready(function () {
 
             $("#models").hide();
+            $("#profile").hide();
+            $("#dashboard").hide();
+            $("#available").hide();
+            $("#productDetails").hide();
 
         });
+        function dashboard() {
+            $("#profile").show();
+            $("#models").hide();
+            $("#available").hide();
+            $("#productDetails").hide();
+
+        }
         function loginCustomer() {
 
             var email = document.getElementById("email").value;
@@ -102,6 +160,7 @@
                 success: function (result) {
                     $("#login-page").hide();
                     $("#models").show();
+                    $("#dashboard").show();
                     if (result.ok) {
                         console.log("done");
                         console.log(result.email);
@@ -131,7 +190,7 @@
                 success: function (response) {
                     console.log(response.customerId);
                     customerId = response.customerId;
-                    summary();
+                    $("#profile").show();
                 },
                 error: function () {
                     console.log("failed");
@@ -140,6 +199,9 @@
 
         }
         function summary() {
+            document.getElementById("models").innerHTML = "";
+            $("#models").show();
+            $("#profile").hide();
             var inner = "";
             $.ajax({
 
@@ -156,48 +218,116 @@
                         console.log(data.id);
                         console.log(data.id.length);
                         if (data.id.length > 0) {
-                            for (var i = 0; i < data.id.length; i++)
+                            for (var i = 0; i < data.id.length; i++) {
                                 inner = "";
-                            console.log((data.id[i]));
-                            console.log("bill id :" + (data.id)[i].BillID);
-                            inner += "<div class=\"row\">"
-                                + "<div class=\"col s12 m6\" >"
-                                + " <div class=\"card blue-grey darken-1\">"
-                                + "<div class=\"card-content white-text\">"
-                                + "<span class=\"card-title\">Test Bill</span>"
-                                + "<p><table><tr><th>Item Name</th><th>Quantity Purchased</th><th>Item Price</th></tr>";
-                            $.ajax({
-                                url: 'http://localhost:59847/Items/GetByBillId/',
-                                type: 'POST',
-                                contentType: 'application/json',
-                                async: false,
-                                data: JSON.stringify({
-                                    "ItemId": (data.id)[i].BillID,
+                                console.log((data.id)[i]);
+                                console.log("bill id :" + (data.id)[i].BillID);
+                                if ((data.id)[i].BillID > 0) {
+                                    inner += "<div class=\"row\">"
+                                        + "<div class=\"col s12 m6\" >"
+                                        + " <div class=\"card blue-grey darken-1\">"
+                                        + "<div class=\"card-content white-text\">"
+                                        + "<span class=\"card-title\">Test Bill</span>"
+                                        + "<p><table><tr><th>Item Name</th><th>Quantity Purchased</th><th>Item Price</th></tr>";
+                                    $.ajax({
+                                        url: 'http://localhost:59847/Items/GetByBillId/',
+                                        type: 'POST',
+                                        contentType: 'application/json',
+                                        async: false,
+                                        data: JSON.stringify({
+                                            "ItemId": (data.id)[i].BillID,
 
-                                }),
-                                success: function (itemdata) {
-                                    console.log("itemdata: " + itemdata.id);
-                                    for (var j = 0; j < itemdata.id.length; j++) {
-                                        console.log((itemdata.id)[j].ItemName);
-                                        inner += "<tr><td>"
-                                            + (itemdata.id)[j].ItemName + "</td>"
-                                            + "<td>"
-                                            + (itemdata.id)[j].QuantityPurchased + "</td>"
-                                            + "<td>" + (itemdata.id)[j].QuantityCost + "</td></tr>"
-                                        console.log("inner: " + inner);
-                                    }
-                                    inner += "</table></p></div>"
-                                        + "</div>"
-                                        + " </div >"
-                                        + "</div>";
+                                        }),
+                                        success: function (itemdata) {
+                                            console.log("itemdata: " + itemdata.id);
+                                            for (var j = 0; j < itemdata.id.length; j++) {
+                                                console.log((itemdata.id)[j].ItemName);
+                                                inner += "<tr><td>"
+                                                    + (itemdata.id)[j].ItemName + "</td>"
+                                                    + "<td>"
+                                                    + (itemdata.id)[j].QuantityPurchased + "</td>"
+                                                    + "<td>" + (itemdata.id)[j].QuantityCost + "</td></tr>"
+                                                console.log("inner: " + inner);
+                                            }
+                                            inner += "</table></p></div>"
+                                                + "</div>"
+                                                + " </div >"
+                                                + "</div>";
+                                        }
+
+                                    });
+                                    document.getElementById("models").innerHTML += inner;
                                 }
-
-                            });
-                            document.getElementById("models").innerHTML += inner;
-
-
+                            }
                         }
                     }
+                }
+            });
+        }
+        function availability() {
+            $("#available").show();
+            $("#profile").hide();
+            document.getElementById("product").value = "";
+            document.getElementById("store_name").value = "";
+            document.getElementById("loc").value = "";
+
+            var stores = [];
+            $.ajax({
+
+                url: 'http://localhost:59847/Vendors/StoreNames/',
+                type: 'POST',
+                contentType: 'application/json',
+                async: false,
+                success: function (data) {
+                    stores = data.stores;
+                    $("#store_name").autocomplete({
+                        source: stores,
+                        select: function (event, ui) {
+
+                            storeName = ui.item.label;
+                            $.ajax({
+
+                                url: 'http://localhost:59847/Vendors/Location/',
+                                type: 'POST',
+                                contentType: 'application/json',
+                                data: JSON.stringify({
+                                    "StoreName": storeName,
+                                }),
+                                async: false,
+                                success: function (data) {
+                                    var locations = data.locations;
+                                    $("#loc").autocomplete({
+                                        source: locations,
+                                        select: function (event, ui) {
+                                            loc = ui.item.label;
+                                        }
+                                    });
+                                }
+                            });
+
+                        }
+                    });
+
+
+                }
+            });
+        }
+        function checkIfAvailable() {
+            $("#productDetails").show();
+            var item = document.getElementById("product").value;
+            $.ajax({
+                url: 'http://localhost:59847/Customers/CheckItem?item='+item,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    "StoreName": storeName,
+                    "Location": loc
+                }),
+                success: function (data) {
+                    console.log(data.products);
+                    document.getElementById("productName").value = data.products.ProductName;
+                    document.getElementById("productQuantity").value = data.products.ProductQuantity;
+                    document.getElementById("productPrice").value = data.products.ProductPrice;
                 }
             });
         }

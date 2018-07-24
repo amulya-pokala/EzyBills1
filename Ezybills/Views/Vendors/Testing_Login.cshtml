@@ -9,7 +9,8 @@
 <head>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+   
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 </head>
 <body id="LoginForm">
     <div class="container">
@@ -37,7 +38,6 @@
     <script>
         function loginVendor() {
             console.log("Success");
-            $('#profile').hide();
             var email = document.getElementById("VendorEmail").value;
             var repass = document.getElementById("VendorPassword").value;
             $.ajax({
@@ -54,7 +54,7 @@
                         console.log("done");
                         console.log(returndata.email);
                         emailMain = returndata.email;
-                        window.location.href = "http://localhost:59847/Vendors/Login";
+                        window.location = "http://localhost:59847/Vendors/Login";
                     }
                     else
                         window.alert(returndata.message);

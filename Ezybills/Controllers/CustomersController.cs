@@ -58,6 +58,26 @@ namespace Ezybills.Controllers
         }
 
         [HttpPost]
+        public ActionResult checkPhone([System.Web.Http.FromBody]Customer customer)
+        {
+            var cu = db.Customers.FirstOrDefault(x => x.CustomerPhone == customer.CustomerPhone);
+            if (cu != null)
+                return Json(new { ok = true, customerId = cu.CustomerID });
+            else return Json(new { ok = false });
+        }
+        
+        [HttpPost]
+        
+        public ActionResult CheckItem([System.Web.Http.FromBody] Vendor vendor)
+        {
+            string item=Request.QueryString["item"];
+            int vendorid = db.Vendors.FirstOrDefault(x => x.StoreName == vendor.StoreName && x.Location == vendor.Location).VendorID;
+            var product = db.Products.FirstOrDefault(x => x.ProductName == item && x.ItemVendorId == vendorid);
+
+            return Json(new {products=product });
+        }
+
+        [HttpPost]
         public ActionResult GetId([System.Web.Http.FromBody]Customer customer)
         {
             var cu = db.Customers.FirstOrDefault(x => x.CustomerEmail == customer.CustomerEmail);
