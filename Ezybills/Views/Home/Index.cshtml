@@ -1,31 +1,81 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Home";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Home - EzyBills</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <style>
+        body {
+            font-family: Arial;
+        }
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+        .split {
+            height: 100%;
+            width: 49%;
+            position: fixed;
+            z-index: 1;
+            top: 60px;
+            overflow-x: hidden;
+            padding-top: 20px;
+        }
+
+        .left {
+            left: 1%;
+            background-color: white;
+            color: black;
+        }
+
+        .right {
+            right: 1%;
+            background-color: #111;
+            color: white;
+        }
+
+        .centered {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+            .centered img {
+                width: 150px;
+                border-radius: 50%;
+            }
+    </style>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                @Html.ActionLink("EzyBills", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+
+    <div class="split left">
+        <div class="centered">
+            <img src="https://www.graphicsprings.com/filestorage/stencils/89d316b4a47cc4fe730aa82ea6451f16.png" alt="Vendors">
+            <h2>Vendors</h2>
+            <a href="/Vendors/Testing_Login" class="btn btn-danger" role="button">Login</a>
+            <a href="#" class="btn btn-primary" role="button">Register</a>
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+
+    <div class="split right">
+        <div class="centered">
+            <img src="https://www.w3schools.com/howto/img_avatar2.png" alt="Consumers">
+            <h2>Customers</h2>
+            <a href="/Customers/Login" class="btn btn-danger" role="button">Login</a>
+            <a href="#" class="btn btn-primary" role="button">Register</a>
+        </div>
     </div>
-</div>
+
+</body>
+</html>
