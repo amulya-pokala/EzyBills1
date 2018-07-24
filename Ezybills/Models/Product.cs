@@ -35,27 +35,22 @@ namespace EzyBills.Models
 
 
         [Required]
-
         [Display(Name = "Price")]
-
         public double ProductPrice { get; set; }
 
 
 
         [Display(Name = "Category")]
-
         public String ProductCategory { get; set; }
 
 
 
         [Display(Name = "Description(if any)")]
-
         public String ProductDescription { get; set; }
 
 
 
         [Display(Name = "Quantity")]
-
         public int ProductQuantity { get; set; }
 
 

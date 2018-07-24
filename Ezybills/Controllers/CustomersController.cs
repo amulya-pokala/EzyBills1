@@ -4,6 +4,8 @@ using System.Net;
 using System.Web.Mvc;
 using EzyBills.Models;
 using Ezybills.Models;
+using System;
+using System.Collections.Generic;
 
 namespace Ezybills.Controllers
 {
@@ -55,26 +57,6 @@ namespace Ezybills.Controllers
             db.SaveChanges();
             return View("Index");
 
-        }
-
-        [HttpPost]
-        public ActionResult checkPhone([System.Web.Http.FromBody]Customer customer)
-        {
-            var cu = db.Customers.FirstOrDefault(x => x.CustomerPhone == customer.CustomerPhone);
-            if (cu != null)
-                return Json(new { ok = true, customerId = cu.CustomerID });
-            else return Json(new { ok = false });
-        }
-        
-        [HttpPost]
-        
-        public ActionResult CheckItem([System.Web.Http.FromBody] Vendor vendor)
-        {
-            string item=Request.QueryString["item"];
-            int vendorid = db.Vendors.FirstOrDefault(x => x.StoreName == vendor.StoreName && x.Location == vendor.Location).VendorID;
-            var product = db.Products.FirstOrDefault(x => x.ProductName == item && x.ItemVendorId == vendorid);
-
-            return Json(new {products=product });
         }
 
         [HttpPost]
@@ -164,6 +146,41 @@ namespace Ezybills.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        [HttpPost]
+        public ActionResult ShowSummary(int customerid, DateTime startdate, DateTime enddate)
+        {
+            // first step get all billids
+            List<int> billid = (from bill in db.Bills
+                                where bill.BillCustomerID == customerid && bill.dateOfPurchase >= startdate
+                                && bill.dateOfPurchase <= enddate
+                                select bill.BillID).ToList();
+            // step 2 show all bills having 
+            List<ItemSummary> summary = new List<ItemSummary>();
+            List<Item> itemList = new List<Item>();
+            foreach (int Bill in billid)
+            {
+                IEnumerable<Item> items = from item in db.Items
+                                          where item.ItemBillID == Bill
+                                          select item;
+                foreach(Item item in items)
+                {
+                    itemList.Add(item);
+                }
+
+            }
+            foreach (Item item in itemList)
+            {
+                ItemSummary itemSummary = new ItemSummary()
+                {
+                    Itemname = item.ItemName,
+                    Quantity = item.QuantityPurchased,
+                    Cost = item.QuantityCost
+                };
+                summary.Add(itemSummary);
+            }
+            return Json(new { Summary = summary });
         }
     }
 }
