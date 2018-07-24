@@ -1,107 +1,57 @@
-﻿<html>
-
+﻿
+@{
+    ViewBag.Title = "Create";
+}
+@section VendorLogin{
+    <link href="@Url.Content("~/Content/Login.css")" rel="stylesheet" type="text/css" />
+}
+<html>
 <head>
     <title>
         Vendor Registration
     </title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
 
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
-
-
-
-    <style type="text/css">
-        html,
-        body {
-            height: 100%;
-            margin: 30px;
-        }
-
-        html {
-            display: table;
-            margin: auto;
-        }
-
-        body {
-            display: table-cell;
-            vertical-align: middle;
-        }
-
-        .margin {
-            margin: 0 !important;
-        }
-    </style>
-
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 </head>
 
-<body class="white">
-    <div id="login-page" class="row">
-        <div class="col s12 z-depth-6 card-panel">
-            <form class="login-form">
-                <div class="row margin">
-                    <div class="input-field col s12">
-                        <i class="mdi-social-person-outline prefix"></i>
-                        <input id="username" type="text" class="validate">
-                        <label for="username" class="center-align">Username</label>
-                    </div>
+<body class="white" id="LoginForm">
+    <div class="container">
+        <div class="login-form">
+            <div class="main-div">
+                <div class="panel">
+                    <h2>Vendor Register</h2>
+                    <p>Please fill in your details</p>
                 </div>
-                <div class="row margin">
-                    <div class="input-field col s12">
-                        <i class="mdi-communication-email prefix"></i>
-                        <input id="email" type="email" class="validate">
-                        <label for="email" class="center-align">Email</label>
+                <form id="Login">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="username" placeholder="Username">
                     </div>
-                </div>
-                <div class="row margin">
-                    <div class="input-field col s12">
-                        <i class="mdi-communication-email prefix"></i>
-                        <input id="phone" type="text" class="validate">
-                        <label for="phone" class="center-align">Phone No</label>
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="email" placeholder="Email Id">
                     </div>
-                </div>
-                <div class="row margin">
-                    <div class="input-field col s12">
-                        <i class="mdi-communication-email prefix"></i>
-                        <input id="store" type="text" class="validate">
-                        <label for="store" class="center-align">Store Name</label>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="phone" placeholder="Phone No">
                     </div>
-                </div>
-                <div class="row margin">
-                    <div class="input-field col s12">
-                        <i class="mdi-communication-email prefix"></i>
-                        <input id="location" type="text" class="validate">
-                        <label for="location" class="center-align">Location</label>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="store" placeholder="Store Name">
                     </div>
-                </div>
-                <div class="row margin">
-                    <div class="input-field col s12">
-                        <i class="mdi-action-lock-outline prefix"></i>
-                        <input id="password" type="password" class="validate">
-                        <label for="password">Password</label>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="location" placeholder="Location">
                     </div>
-                </div>
-                <div class="row margin">
-                    <div class="input-field col s12">
-                        <i class="mdi-action-lock-outline prefix"></i>
-                        <input id="password-again" type="password">
-                        <label for="password-again">Re-type password</label>
+                    <div class="form-group">
+                        <input type="password" class="form-control" id="password" placeholder="Password">
                     </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col s12">
-                        <a onclick="registerVendor()" class="btn waves-effect waves-light col s12">Register Now</a>
+                    <div class="form-group">
+                        <input type="password" class="form-control" id="password-again" placeholder="Re-type Password">
                     </div>
-                    <div class="input-field col s12">
-                        <p class="margin center medium-small sign-up">
-                            Already have an account?
-                            <a href="Login">Login</a>
-                        </p>
+                    <button onclick = "registerVendor()" class="btn btn-primary">Register</button>
+                    <div class="Existing User">
+                        <a href="Testing_Login">Already have an account ?</a>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
     <script>
